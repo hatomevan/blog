@@ -1,0 +1,170 @@
+
+html {
+    scroll-behavior: smooth;
+  }
+  
+body {
+    font-family:"Zen Kaku Gothic Antique", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+    margin: 0 auto;
+    max-width: 900px;
+    padding: 20px;
+    background: #f2f0ea;
+    color: #024953;
+    font-size: 1rem;}
+
+  header {
+    text-align: center;
+    padding: 40px 0 20px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    margin-bottom: 70px;
+  }
+
+  .hr1{
+    margin: 50px 250px 70px 250px;
+    border-color: #008da0;
+    border-top-width: 0.3rem;
+  }
+
+  .hr2{
+    margin: 50px 0;
+    border-color: #008da0;
+  }
+
+  h1{
+  font-family: "Zen Kaku Gothic Antique", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.6rem;
+  line-height: inherit;
+  font-size: 1.3rem;
+  margin-top: 20px;
+  }
+
+  h2{
+    font-family: "Zen Kaku Gothic Antique", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: 0.2rem;
+    line-height: inherit;
+    font-size: 1rem;
+    margin-bottom: 0px;
+  }
+
+  .maintext{
+    font-family: "Noto Sans JP", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    line-height: 1.8rem;
+    margin-top: 20px;
+    margin-bottom: 60px;
+  }
+  
+  .description{
+    font-family: "Noto Sans JP", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    line-height: 1.8rem;
+    margin: 10px 0;
+  }
+
+  main {
+    display: flex;
+    gap: 2em;
+  }
+  
+
+ul{
+ list-style-type: none;
+}
+
+
+  .about{
+    margin-bottom: 50px;
+  } 
+  .left-column {
+    flex: 3;
+    margin-right: 50px;
+  }
+  
+  .right-column {
+    flex: 1;
+  }
+  
+  article {
+    margin-bottom: 2em;
+  }
+  
+  article h3 {
+    margin: 0.2em 0;
+  }
+  
+  a {
+    color: rgb(141, 100, 23);
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  .footer-columns {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 100px;
+  }
+  
+
+  /* ===============================
+   📱 レスポンシブ対応
+   =============================== */
+
+/* タブレット以下（900px未満）で1カラム表示に */
+@media screen and (max-width: 899px) {
+    main {
+      flex-direction: column;
+      gap: 2em;
+    }
+  
+    .left-column {
+      margin-right: 0;
+    }
+  
+    .footer-columns {
+      flex-direction: column;
+      gap: 2em;
+      padding: 0;
+    }
+  
+    .hr1 {
+      margin: 30px auto;
+    }
+  }
+  
+  /* スマホ（600px未満）でさらに調整 */
+  @media screen and (max-width: 599px) {
+    body {
+      padding: 10px;
+      font-size: 0.95rem;
+    }
+  
+    h1 {
+      font-size: 1rem;
+      letter-spacing: 0.3rem;
+    }
+  
+    h2 {
+      font-size: 0.9rem;
+      letter-spacing: 0.1rem;
+    }
+  
+    .footer-columns {
+      padding: 0;
+    }
+  }
