@@ -12,6 +12,37 @@ fetch(jsonPath)
     return res.json();
   })
   .then(data => {
+    // タグ一覧表示
+const tagContainer = document.getElementById('tag-links');
+if (tagContainer) {
+  const tagMap = {};
+  data.forEach(a => {
+    (a.tags || []).forEach(tag => {
+      tagMap[tag] = (tagMap[tag] || 0) + 1;
+    });
+  });
+
+  const tagListHtml = Object.keys(tagMap).sort().map(tag => {
+    const slug = encodeURIComponent(tag); // もしくは slugify(tag)
+    return `<li><a href="/tags/${slug}.html">${tag} (${tagMap[tag]})</a></li>`;
+  }).join('');
+  tagContainer.innerHTML = tagListHtml;
+}
+
+// 月別アーカイブ表示
+const archiveContainer = document.getElementById('archive-links');
+if (archiveContainer) {
+  const categoryMap = {};
+  data.forEach(a => {
+    categoryMap[a.category] = (categoryMap[a.category] || 0) + 1;
+  });
+
+  const archiveHtml = Object.keys(categoryMap).sort().reverse().map(cat => {
+    return `<li><a href="/${cat}.html">${cat} (${categoryMap[cat]})</a></li>`;
+  }).join('');
+  
+  archiveContainer.innerHTML = archiveHtml;
+}
     console.log('📦 記事一覧:', data);
 
 // ここで一度コピーして日付降順ソート

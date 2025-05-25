@@ -18,14 +18,8 @@
   </header>
 
   <main>
-    <section class="left-column">
-        <article>
-            <time datetime="{{date}}">{{date}}</time>
-            <h3>{{title}}</h3>
-            <div class="maintext">{{content}}</div>
-          </article>
-
-          <p><a href="../index.html">TOPへ戻る</a></p>
+    <section class="left-column" id="blog-posts">
+      <!-- JSが10件まで挿入 -->
     </section>
 
     <aside class="right-column">
@@ -36,6 +30,14 @@
       <section class="recent">
       <h2>recent post</h2>
       <ul id="recent-posts"></ul>
+      </section>
+      <section class="taglist">
+        <h2>タグ一覧</h2>
+        <ul id="tag-links"></ul>
+      </section>
+      <section class="archive">
+        <h2>月別アーカイブ</h2>
+        <ul id="archive-links"></ul>
       </section>
     </aside>
   </main>

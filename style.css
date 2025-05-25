@@ -84,10 +84,6 @@ ul{
  list-style-type: none;
 }
 
-
-  .about{
-    margin-bottom: 50px;
-  } 
   .left-column {
     flex: 3;
     margin-right: 50px;
@@ -95,6 +91,10 @@ ul{
   
   .right-column {
     flex: 1;
+  }
+
+  .right-column section{
+    margin-bottom: 35px;
   }
   
   article {
