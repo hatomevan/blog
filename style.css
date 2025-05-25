@@ -64,7 +64,6 @@ body {
     line-height: 1.8rem;
     margin-top: 20px;
     margin-bottom: 60px;
-      font-size: 1rem;
   }
   
   .description{
@@ -164,6 +163,15 @@ ul{
       font-size: 0.9rem;
       letter-spacing: 0.1rem;
     }
+
+.maintext{
+    font-family: "Noto Sans JP", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    line-height: 1.8rem;
+    margin-top: 20px;
+    margin-bottom: 30px;
+  }
   
     .footer-columns {
       padding: 0;
