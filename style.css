@@ -164,6 +164,10 @@ ul{
       letter-spacing: 0.1rem;
     }
 
+      .right-column {
+      display:none;
+    }
+
 .maintext{
     font-family: "Noto Sans JP", sans-serif;
     font-optical-sizing: auto;
