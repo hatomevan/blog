@@ -68,7 +68,10 @@ fs.readdirSync(mdDir).forEach(file => {
     .replace(/{{title}}/g, title)
     .replace(/{{date}}/g, date)
     .replace(/{{category}}/g, category)
-    .replace(/{{tags}}/g, tags.map(tag => `<span class="tag">${tag}</span>`).join(' '))
+    .replace(/{{tags}}/g, tags.map(tag => {
+  const slug = getSlugFromTag(tag);
+  return `<a href="../tags/${slug}.html" class="tag">${tag}</a>`;
+}).join(' '))
     .replace(/{{content}}/g, htmlBody);
   fs.writeFileSync(outPath, html);
 
@@ -128,6 +131,7 @@ for (const article of articles) {
     });
   }
 }
+
 
 for (const [tag, group] of Object.entries(groupedByTag)) {
   const tagSlug = getSlugFromTag(tag);
