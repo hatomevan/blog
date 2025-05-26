@@ -20,9 +20,9 @@ fetch(`${BASE}/articles.json`)
       });
 
       const tagListHtml = Object.keys(tagMap).sort().map(tag => {
-        const slug = encodeURIComponent(tag);
-        return `<li><a href="${BASE}/tags/${slug}.html">${tag} (${tagMap[tag]})</a></li>`;
-      }).join('');
+  const slug = (window.tagSlugMap && window.tagSlugMap[tag]) || encodeURIComponent(tag);
+  return `<li><a href="${BASE}/tags/${slug}.html">${tag} (${tagMap[tag]})</a></li>`;
+}).join('');
       tagContainer.innerHTML = tagListHtml;
     }
 
