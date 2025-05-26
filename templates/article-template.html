@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -8,8 +7,8 @@
   <link rel="stylesheet" href="../style.css" />
   <link rel="stylesheet" href="../reset.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Kaisei+Opti&family=Kiwi+Maru&family=Montserrat:ital@0;1&family=Noto+Sans+JP:wght@100..900&family=Noto+Serif+JP:wght@200..900&family=Quicksand:wght@300..700&family=Sawarabi+Gothic&family=Zen+Kaku+Gothic+Antique&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&family=Kaisei+Opti&family=Kiwi+Maru&family=Montserrat:ital@0;1&family=Noto+Sans+JP:wght@100..900&family=Noto+Serif+JP:wght@200..900&family=Quicksand:wght@300..700&family=Sawarabi+Gothic&family=Zen+Kaku+Gothic+Antique&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
@@ -18,18 +17,25 @@
   </header>
 
   <main>
-    <section class="left-column" id="blog-posts">
-      <!-- JSが10件まで挿入 -->
+    <section class="left-column">
+      <article>
+        <time datetime="{{date}}">{{date}}</time>
+        <h3>{{title}}</h3>
+        <p class="category">カテゴリ: {{category}}</p>
+        <div class="tags">タグ: {{tags}}</div>
+        <div class="maintext">{{content}}</div>
+      </article>
+      <p><a href="../index.html">← TOPへ戻る</a></p>
     </section>
 
     <aside class="right-column">
-    <section class="about">
-      <h2>ABOUT ME</h2>
-      <p>鳩目伴 - hatome van</p>
+      <section class="about">
+        <h2>ABOUT ME</h2>
+        <p>鳩目伴 - hatome van</p>
       </section>
       <section class="recent">
-      <h2>recent post</h2>
-      <ul id="recent-posts"></ul>
+        <h2>recent post</h2>
+        <ul id="recent-posts"></ul>
       </section>
       <section class="taglist">
         <h2>タグ一覧</h2>
@@ -56,8 +62,6 @@
     </div>
   </footer>
 
-
-  <script src="../script.js">
-  </script>
+  <script src="../script.js"></script>
 </body>
 </html>

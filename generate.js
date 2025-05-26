@@ -9,20 +9,16 @@ const jsonPath = path.join(__dirname, 'articles.json');
 const templatePath = path.join(__dirname, 'templates', 'article-template.html');
 const listTemplatePath = path.join(__dirname, 'templates', 'list-template.html');
 
-const template = fs.readFileSync(templatePath, 'utf-8');
+const articleTemplate = fs.readFileSync(templatePath, 'utf-8');
 const listTemplate = fs.readFileSync(listTemplatePath, 'utf-8');
 
 fs.ensureDirSync(outDir);
 fs.ensureDirSync(tagDir);
 
-// スラッグ化関数（例：「自己韜晦」→「jikotoukai」）
-const slugify = str => str.normalize("NFKD")
-  .replace(/[^\w\s-]/g, '')
-  .replace(/\s+/g, '-')
-  .replace(/--+/g, '-')
-  .replace(/^-+|-+$/g, '')
-  .toLowerCase();
+// 日本語対応 slugify（タグ名やカテゴリ名をURL化）
+const slugify = str => encodeURIComponent(str.trim());
 
+// 記事一覧の格納用グローバル変数
 const articles = [];
 
 // 📄 Markdown 解析 & HTML 出力
@@ -54,13 +50,12 @@ fs.readdirSync(mdDir).forEach(file => {
   const filename = file.replace(/\.md$/, '.html');
   const outPath = path.join(outDir, filename);
 
-  const html = template
+  const html = articleTemplate
     .replace(/{{title}}/g, title)
     .replace(/{{date}}/g, date)
     .replace(/{{category}}/g, category)
     .replace(/{{tags}}/g, tags.map(tag => `<span class="tag">${tag}</span>`).join(' '))
     .replace(/{{content}}/g, htmlBody);
-
   fs.writeFileSync(outPath, html);
 
   articles.push({

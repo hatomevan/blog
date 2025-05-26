@@ -39,37 +39,43 @@ fetch('/articles.json')
     }
 
     // === 日付で降順ソート ===
-    const sorted = data.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+const sorted = data.slice().sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    // === 最新記事エリア（トップ用） ===
-    const container = document.getElementById('latest-articles');
-    if (container) {
-      sorted.slice(0, 10).forEach(article => {
-        const div = document.createElement('div');
-        div.innerHTML = `
-          <h2><a href="/articles/${article.filename}">${article.title}</a></h2>
-          <p><em>${article.date}</em></p>
-          <p>${article.excerpt}... <a href="/articles/${article.filename}">Continue reading</a></p>
-          <hr>
-        `;
-        container.appendChild(div);
-      });
-    }
+// === 現在地がトップページかを判定 ===
+const isTopPage =
+  location.pathname === '/' ||
+  location.pathname === '/index.html' ||
+  location.pathname.endsWith('/index.html');
 
-    // === メイン記事（トップ一覧） ===
-    const blog = document.getElementById('blog-posts');
-    if (blog) {
-      sorted.slice(0, 10).forEach(article => {
-        const el = document.createElement('article');
-        el.innerHTML = `
-          <p>${article.date}</p>
-          <h3>${article.title}</h3>
-          <p class="description">${article.excerpt}...</p>
-          <p><a href="/articles/${article.filename}">Continue reading</a></p>
-        `;
-        blog.appendChild(el);
-      });
-    }
+// === 最新記事エリア（トップ用） ===
+const container = document.getElementById('latest-articles');
+if (isTopPage && container) {
+  sorted.slice(0, 10).forEach(article => {
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <h2><a href="/articles/${article.filename}">${article.title}</a></h2>
+      <p><em>${article.date}</em></p>
+      <p>${article.excerpt}... <a href="/articles/${article.filename}">Continue reading</a></p>
+      <hr>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// === メイン記事（トップ一覧） ===
+const blog = document.getElementById('blog-posts');
+if (isTopPage && blog) {
+  sorted.slice(0, 10).forEach(article => {
+    const el = document.createElement('article');
+    el.innerHTML = `
+      <p>${article.date}</p>
+      <h3>${article.title}</h3>
+      <p class="description">${article.excerpt}...</p>
+      <p><a href="/articles/${article.filename}">Continue reading</a></p>
+    `;
+    blog.appendChild(el);
+  });
+}
 
     // === サイドバー・フッター記事リンク ===
     const recent = document.getElementById('recent-posts');
@@ -83,3 +89,5 @@ fetch('/articles.json')
   .catch(error => {
     console.error('🚨 JSON読み込みエラー:', error);
   });
+
+  
