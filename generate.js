@@ -69,9 +69,9 @@ fs.readdirSync(mdDir).forEach(file => {
     .replace(/{{date}}/g, date)
     .replace(/{{category}}/g, category)
     .replace(/{{tags}}/g, tags.map(tag => {
-  const slug = getSlugFromTag(tag);
-  return `<a href="../tags/${slug}.html" class="tag">${tag}</a>`;
-}).join(' '))
+      const slug = getSlugFromTag(tag);
+      return `<a href="../tags/${slug}.html" class="tag">${tag}</a>`;
+    }).join(' '))
     .replace(/{{content}}/g, htmlBody);
   fs.writeFileSync(outPath, html);
 
