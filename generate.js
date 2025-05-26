@@ -96,7 +96,6 @@ const renderListPage = (title, items) => {
       <p>${a.date}</p>
       <p>${a.excerpt}...</p>
     </article>
-    <hr>
   `).join('');
   return listTemplate
     .replace(/{{title}}/g, title)
