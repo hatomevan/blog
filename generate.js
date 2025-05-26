@@ -15,8 +15,17 @@ const listTemplate = fs.readFileSync(listTemplatePath, 'utf-8');
 fs.ensureDirSync(outDir);
 fs.ensureDirSync(tagDir);
 
+// スラッグ化関数（例：「自己韜晦」→「jikotoukai」）
+const slugify = str => str.normalize("NFKD")
+  .replace(/[^\w\s-]/g, '')
+  .replace(/\s+/g, '-')
+  .replace(/--+/g, '-')
+  .replace(/^-+|-+$/g, '')
+  .toLowerCase();
+
 const articles = [];
 
+// 📄 Markdown 解析 & HTML 出力
 fs.readdirSync(mdDir).forEach(file => {
   if (!file.endsWith('.md')) return;
 
@@ -29,9 +38,14 @@ fs.readdirSync(mdDir).forEach(file => {
   const category = date.slice(0, 7);
 
   const tagsLine = lines.find(line => line.startsWith('[tags]')) || '';
-  const tags = tagsLine.replace('[tags]', '').split(',').map(tag => tag.trim()).filter(Boolean);
+  const tags = tagsLine.replace('[tags]', '')
+    .split(',')
+    .map(tag => tag.trim())
+    .filter(Boolean);
 
-  const bodyStart = lines.findIndex(line => line.trim() === '' || !line.startsWith('#') && !line.startsWith('>') && !line.startsWith('['));
+  const bodyStart = lines.findIndex(line =>
+    line.trim() === '' || (!line.startsWith('#') && !line.startsWith('>') && !line.startsWith('['))
+  );
   const body = lines.slice(bodyStart).join('\n');
   const htmlBody = marked.parse(body);
   const plainText = body.replace(/[`*_>#\-\[\]\(\)\r\n]/g, '').replace(/<[^>]+>/g, '');
@@ -39,7 +53,6 @@ fs.readdirSync(mdDir).forEach(file => {
 
   const filename = file.replace(/\.md$/, '.html');
   const outPath = path.join(outDir, filename);
-  
 
   const html = template
     .replace(/{{title}}/g, title)
@@ -63,99 +76,72 @@ fs.readdirSync(mdDir).forEach(file => {
 // 🟡 JSON 出力
 fs.writeFileSync(jsonPath, JSON.stringify(articles, null, 2));
 
-// 🟡 カテゴリ別ページ（YYYY-MM.html）
-const groupedByCategory = {};
-articles.forEach(a => {
-  if (!groupedByCategory[a.category]) groupedByCategory[a.category] = [];
-  groupedByCategory[a.category].push(a);
-});
-
-for (const [cat, group] of Object.entries(groupedByCategory)) {
-  const listHtml = group.map(a => `
+// 🔁 一覧ページ生成ユーティリティ
+const renderListPage = (title, items) => {
+  const listHtml = items.map(a => `
     <article>
-      <h3><a href="articles/${a.filename}">${a.title}</a></h3>
+      <h3><a href="${a.link}">${a.title}</a></h3>
       <p>${a.date}</p>
       <p>${a.excerpt}...</p>
     </article>
     <hr>
   `).join('');
-
-  const html = listTemplate
-    .replace(/{{title}}/g, `${cat} の記事一覧`)
+  return listTemplate
+    .replace(/{{title}}/g, title)
     .replace(/{{content}}/g, listHtml);
+};
 
-  fs.writeFileSync(path.join(__dirname, `${cat}.html`), html);
-}
-
-// 🟡 タグ別ページ（tags/タグ.html）
-const groupedByTag = {};
-articles.forEach(a => {
-  a.tags.forEach(tag => {
-    if (!groupedByTag[tag]) groupedByTag[tag] = [];
-    groupedByTag[tag].push(a);
+// 🗂 カテゴリ別ページ（YYYY-MM.html）
+const groupedByCategory = {};
+for (const article of articles) {
+  if (!groupedByCategory[article.category]) {
+    groupedByCategory[article.category] = [];
+  }
+  groupedByCategory[article.category].push({
+    ...article,
+    link: `articles/${article.filename}`
   });
-});
-
-for (const [tag, group] of Object.entries(groupedByTag)) {
-  const listHtml = group.map(a => `
-    <article>
-      <h3><a href="../articles/${a.filename}">${a.title}</a></h3>
-      <p>${a.date}</p>
-      <p>${a.excerpt}...</p>
-    </article>
-    <hr>
-  `).join('');
-
-  const html = listTemplate
-  .replace(/{{title}}/g, `タグ: ${tag}`)
-  .replace(/{{content}}/g, listHtml);
-
-  fs.writeFileSync(path.join(tagDir, `${tag}.html`), html);
 }
 
-// 例: 「自己韜晦」→「jikotoukai」
-const slugify = str => str.normalize("NFKD")
-  .replace(/[^\w\s-]/g, '')
-  .replace(/\s+/g, '-')
-  .replace(/--+/g, '-')
-  .replace(/^-+|-+$/g, '')
-  .toLowerCase();
+for (const [category, group] of Object.entries(groupedByCategory)) {
+  const html = renderListPage(`${category} の記事一覧`, group);
+  fs.writeFileSync(path.join(__dirname, `${category}.html`), html);
+}
+
+// 🏷 タグ別ページ（スラッグ化対応）
+const groupedByTag = {};
+for (const article of articles) {
+  for (const tag of article.tags) {
+    if (!groupedByTag[tag]) groupedByTag[tag] = [];
+    groupedByTag[tag].push({
+      ...article,
+      link: `../articles/${article.filename}`
+    });
+  }
+}
 
 for (const [tag, group] of Object.entries(groupedByTag)) {
   const tagSlug = slugify(tag);
-  const listHtml = group.map(a => `
-    <article>
-      <h3><a href="../articles/${a.filename}">${a.title}</a></h3>
-      <p>${a.date}</p>
-      <p>${a.excerpt}...</p>
-    </article>
-    <hr>
-  `).join('');
-
-  const html = listTemplate
-    .replace(/{{title}}/g, `タグ: ${tag}`)
-    .replace(/{{content}}/g, listHtml);
-
+  const html = renderListPage(`タグ: ${tag}`, group);
   fs.writeFileSync(path.join(tagDir, `${tagSlug}.html`), html);
 }
 
-// 年別カテゴリ
+// 📅 年別ページ（YYYY.html）→ 月別カテゴリ一覧リンク
 const groupedByYear = {};
-articles.forEach(a => {
-  const year = a.date.slice(0, 4);
+for (const article of articles) {
+  const year = article.date.slice(0, 4);
   if (!groupedByYear[year]) groupedByYear[year] = new Set();
-  groupedByYear[year].add(a.category);
-});
+  groupedByYear[year].add(article.category);
+}
 
 for (const [year, months] of Object.entries(groupedByYear)) {
-  const links = [...months].sort().map(m => {
-    return `<li><a href="${m}.html">${m}</a></li>`;
-  }).join('');
+  const links = [...months].sort().map(month =>
+    `<li><a href="${month}.html">${month}</a></li>`
+  ).join('');
   const html = listTemplate
     .replace(/{{title}}/g, `${year} 年のアーカイブ`)
     .replace(/{{content}}/g, `<ul>${links}</ul>`);
   fs.writeFileSync(path.join(__dirname, `${year}.html`), html);
 }
 
-
-console.log('✅ 全ページ生成完了（記事、カテゴリ別、タグ別）');
+console.log('✅ 全ページ生成完了（記事、カテゴリ別、タグ別、年別）');
