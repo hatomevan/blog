@@ -1,3 +1,5 @@
+const tagMap = require('./tagmap');
+
 const fs = require('fs-extra');
 const path = require('path');
 const { marked } = require('marked');
@@ -15,8 +17,20 @@ const listTemplate = fs.readFileSync(listTemplatePath, 'utf-8');
 fs.ensureDirSync(outDir);
 fs.ensureDirSync(tagDir);
 
-// 日本語対応 slugify（タグ名やカテゴリ名をURL化）
-const slugify = str => encodeURIComponent(str.trim());
+function getSlugFromTag(tagName) {
+  return tagMap[tagName] || slugify(tagName); // slugify は fallback
+}
+
+// slugify関数（簡易版）：
+function slugify(text) {
+  return text
+    .toString()
+    .normalize('NFKD') // 日本語をローマ字っぽく分解
+    .replace(/[^\w\s-]/g, '') // 記号除去
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-') // スペース→ハイフン
+}
 
 // 記事一覧の格納用グローバル変数
 const articles = [];
@@ -116,7 +130,7 @@ for (const article of articles) {
 }
 
 for (const [tag, group] of Object.entries(groupedByTag)) {
-  const tagSlug = slugify(tag);
+  const tagSlug = getSlugFromTag(tag);
   const html = renderListPage(`タグ: ${tag}`, group);
   fs.writeFileSync(path.join(tagDir, `${tagSlug}.html`), html);
 }
