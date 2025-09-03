@@ -8,4 +8,5 @@ window.tagSlugMap = {
   "実況": "live",
   "ゲーム": "game",
   "英語": "english",
+  "思考": "think",
 };
